@@ -180,6 +180,17 @@ async function run() {
       res.send(result);
     });
 
+    // ALL GET Requests
+    // Get all scholarships data from the database
+    app.get("/top-scholarships", async (req, res) => {
+      const result = await allScholarShipsCollection
+        .find({})
+        .sort({ applicationFees: 1, scholarshipPostedDate: -1 }) // Sort by lowest fees and most recent post
+        .limit(8) // Limit to 6 scholarships
+        .toArray();
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
