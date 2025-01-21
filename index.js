@@ -47,6 +47,16 @@ async function run() {
     const allReviewsCollection = db.collection("allReviews");
     const usersCollection = db.collection("users");
 
+    // JWT Generate
+    // jwt related api
+    app.post("/jwt", async (req, res) => {
+      const user = req.body;
+      const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: "365d",
+      });
+      res.send({ token });
+    });
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
