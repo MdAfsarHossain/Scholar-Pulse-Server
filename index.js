@@ -238,6 +238,15 @@ async function run() {
       res.send({ role: result?.role });
     });
 
+    // Gell specific user applied data
+    app.get("/my-applications/:email", verifyToken, async (req, res) => {
+      const email = req.params.email;
+      const result = await allApplicationsCollection
+        .find({ applicantsEmail: email })
+        .toArray();
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
