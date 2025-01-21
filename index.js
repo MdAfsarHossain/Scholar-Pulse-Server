@@ -498,6 +498,36 @@ async function run() {
       res.send(result);
     });
 
+    // PAGINATION CODE
+    // Gell All Visas Data from DB for Pagination
+    app.get("/all-scholarships", async (req, res) => {
+      const currentPage = parseInt(req?.query?.page) - 1;
+      const perPageItems = parseInt(req?.query?.size);
+      const filterData = req?.query?.filter;
+      const search = req?.query?.search;
+
+      let query = {
+        $or: [
+          { universityName: { $regex: search, $options: "i" } },
+          { degree: { $regex: search, $options: "i" } },
+          { scholarshipName: { $regex: search, $options: "i" } },
+        ],
+      };
+
+      if (filterData && filterData !== "All Type") {
+        query.degree = filterData;
+      }
+
+      let options = {};
+
+      const result = await allScholarShipsCollection
+        .find(query, options)
+        .skip(currentPage * perPageItems)
+        .limit(perPageItems)
+        .toArray();
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
