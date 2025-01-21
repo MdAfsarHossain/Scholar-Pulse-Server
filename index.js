@@ -141,6 +141,24 @@ async function run() {
       }
     );
 
+    // save or update a user in db
+    app.post("/users/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email };
+      const user = req.body;
+      // check if user exists in db
+      const isExist = await usersCollection.findOne(query);
+      if (isExist) {
+        return res.send(isExist);
+      }
+      const result = await usersCollection.insertOne({
+        ...user,
+        role: "User",
+        timestamp: Date.now(),
+      });
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
