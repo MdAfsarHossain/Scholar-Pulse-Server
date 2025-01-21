@@ -316,6 +316,39 @@ async function run() {
       res.send({ averageRating });
     });
 
+    // Admin statistics
+    app.get("/admin-statistics", verifyToken, verifyAdmin, async (req, res) => {
+      const totalUsers = await usersCollection.countDocuments();
+      const totalScholarships =
+        await allScholarShipsCollection.countDocuments();
+      const totalApplications =
+        await allApplicationsCollection.countDocuments();
+      const totalReviews = await allReviewsCollection.countDocuments();
+
+      // Chart Data
+      const allApplications = await allApplicationsCollection.find().toArray();
+
+      const chartData = allApplications?.map((application) => {
+        const day = new Date(application?.timestamp).getDate();
+        const month = new Date(application?.timestamp).getMonth() + 1;
+
+        const data = [
+          `${day}/${month}`,
+          parseInt(application?.applicationFees),
+        ];
+        return data;
+      });
+      chartData.unshift(["Day", "Application Fees"]);
+
+      res.send({
+        totalUsers,
+        totalScholarships,
+        totalApplications,
+        totalReviews,
+        chartData,
+      });
+    });
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
