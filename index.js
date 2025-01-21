@@ -40,6 +40,13 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
 
+    // Create a database
+    const db = client.db("scholarshipPlus");
+    const allScholarShipsCollection = db.collection("allScholarShips");
+    const allApplicationsCollection = db.collection("allApplications");
+    const allReviewsCollection = db.collection("allReviews");
+    const usersCollection = db.collection("users");
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
