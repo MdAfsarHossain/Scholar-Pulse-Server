@@ -291,6 +291,15 @@ async function run() {
       res.send(result);
     });
 
+    // Get reviews base on specific scholarships
+    app.get("/reviews/:id", async (req, res) => {
+      const id = req.params.id;
+      const result = await allReviewsCollection
+        .find({ scholarshipId: id })
+        .toArray();
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
