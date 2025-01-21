@@ -159,6 +159,20 @@ async function run() {
       res.send(result);
     });
 
+    // add Application data
+    app.post("/add-application", async (req, res) => {
+      const newApplication = req.body;
+      const newDateChanged = new Date(newApplication.applicationDeadline);
+
+      const result = await allApplicationsCollection.insertOne({
+        ...newApplication,
+        status: "Pending",
+        timestamp: Date.now(),
+        applicationDeadline: newDateChanged.getTime(),
+      });
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
