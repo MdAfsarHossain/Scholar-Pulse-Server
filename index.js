@@ -435,6 +435,31 @@ async function run() {
       }
     );
 
+    // Update feedback
+    app.patch(
+      "/add-feedback/:id",
+      verifyToken,
+      verifyAdminModerator,
+      async (req, res) => {
+        const id = req.params.id;
+        const { feedback } = req.body;
+        const query = { _id: new ObjectId(id) };
+        const options = { upsert: true };
+        const updateDoc = {
+          $set: {
+            feedback: feedback,
+            // timestamp: Date.now(),
+          },
+        };
+        const result = await allApplicationsCollection.updateOne(
+          query,
+          updateDoc,
+          options
+        );
+        res.send(result);
+      }
+    );
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
