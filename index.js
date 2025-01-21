@@ -300,6 +300,22 @@ async function run() {
       res.send(result);
     });
 
+    // Get Average rating
+    app.get("/average-rating/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { scholarshipId: id };
+      const reviews = await allReviewsCollection.find(query).toArray();
+      const totalRatings = reviews.reduce(
+        (sum, rating) => sum + parseInt(rating.reviewRating),
+        0
+      );
+      const totalReviews = await allReviewsCollection.countDocuments({
+        scholarshipId: id,
+      });
+      const averageRating = totalRatings / totalReviews;
+      res.send({ averageRating });
+    });
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
