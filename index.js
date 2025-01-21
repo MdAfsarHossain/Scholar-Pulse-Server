@@ -349,6 +349,19 @@ async function run() {
       });
     });
 
+    // ALL PATCH Requests
+    // Update a single user role
+    app.patch("/user-role/:id", verifyToken, verifyAdmin, async (req, res) => {
+      const id = req.params.id;
+      const { newRole } = req.body;
+      const query = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: { role: newRole },
+      };
+      const result = await usersCollection.updateOne(query, updateDoc);
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
