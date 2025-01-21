@@ -127,6 +127,20 @@ async function run() {
       res.send({ clientSecret: client_secret });
     });
 
+    // Add a new scholarship data to the database
+    app.post(
+      "/add-scholarship",
+      verifyToken,
+      verifyAdminModerator,
+      async (req, res) => {
+        const newScholarship = req.body;
+        const result = await allScholarShipsCollection.insertOne(
+          newScholarship
+        );
+        res.send(result);
+      }
+    );
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
