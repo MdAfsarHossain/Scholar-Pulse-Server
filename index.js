@@ -362,6 +362,26 @@ async function run() {
       res.send(result);
     });
 
+    // Update Scholarship data
+    app.put(
+      "/scholarship/update/:id",
+      verifyToken,
+      verifyAdminModerator,
+      async (req, res) => {
+        const id = req.params.id;
+        const updatedData = req.body;
+        const query = { _id: new ObjectId(id) };
+        const updateDoc = {
+          $set: updatedData,
+        };
+        const result = await allScholarShipsCollection.updateOne(
+          query,
+          updateDoc
+        );
+        res.send(result);
+      }
+    );
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
