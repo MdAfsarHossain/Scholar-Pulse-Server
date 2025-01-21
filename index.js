@@ -210,6 +210,20 @@ async function run() {
       res.send(result);
     });
 
+    // Get all users data from the database
+    app.get("/users/:email", verifyToken, verifyAdmin, async (req, res) => {
+      const email = req.params.email;
+      const filter = req?.query?.filter;
+      let query = {};
+
+      if (filter && filter !== "ALL") {
+        query.role = filter;
+      }
+
+      const result = await usersCollection.find(query).toArray();
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
