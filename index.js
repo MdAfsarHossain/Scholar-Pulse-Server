@@ -247,6 +247,33 @@ async function run() {
       res.send(result);
     });
 
+    // Get All applied applications
+    app.get("/all-applications", async (req, res) => {
+      const { newDate } = req.query;
+      const newDateChanged = new Date(newDate);
+      // Calculate the start and end of the day in milliseconds
+      const startOfDay = new Date(
+        newDateChanged.setHours(0, 0, 0, 0)
+      ).getTime();
+      const endOfDay = new Date(
+        newDateChanged.setHours(23, 59, 59, 999)
+      ).getTime();
+
+      if (newDate === "undefined" || !newDate) {
+        const result = await allApplicationsCollection.find().toArray();
+        res.send(result);
+      } else {
+        let query = {
+          $or: [
+            { timestamp: { $gte: startOfDay, $lte: endOfDay } },
+            { applicationDeadline: { $gte: startOfDay, $lte: endOfDay } },
+          ],
+        };
+        const result = await allApplicationsCollection.find(query).toArray();
+        res.send(result);
+      }
+    });
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
