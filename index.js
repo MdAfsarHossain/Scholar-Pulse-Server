@@ -203,7 +203,8 @@ async function run() {
     );
 
     // Get single scholarship data from the database
-    app.get("/single-scholartship/:id", verifyToken, async (req, res) => {
+    // app.get("/single-scholartship/:id", verifyToken, async (req, res) => {
+    app.get("/single-scholartship/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await allScholarShipsCollection.findOne(query);
@@ -505,6 +506,7 @@ async function run() {
       const perPageItems = parseInt(req?.query?.size);
       const filterData = req?.query?.filter;
       const search = req?.query?.search;
+      const sort = req?.query?.sort;
 
       let query = {
         $or: [
@@ -525,6 +527,15 @@ async function run() {
         .skip(currentPage * perPageItems)
         .limit(perPageItems)
         .toArray();
+
+      if (sort === "ASC" || sort === "DESC") {
+        result.sort((a, b) => {
+          const applicationsFeesA = a?.applicationFees || 0;
+          const applicationsFeesB = b?.applicationFees || 0;
+          return sort === "ASC" ? applicationsFeesA - applicationsFeesB : applicationsFeesB - applicationsFeesA;
+        });
+      }
+
       res.send(result);
     });
 
